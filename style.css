@@ -1,0 +1,87 @@
+*,
+*::before, * ::after {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+body{
+    color:azure;
+    display: flex;
+	justify-content: center;
+	background:linear-gradient(to bottom, rgba(0, 0, 0, 0.5) 0%, rgba(0, 0, 0, 0.5) 100%),url(https://img.freepik.com/free-vector/speed-light-spotlights-digital-background_23-2148821702.jpg);
+	background-attachment: fixed;
+	background-repeat: no-repeat;
+	background-size: cover; 
+    font-family: 'Courier New', Courier, monospace;
+    margin-bottom: 25px;
+    margin-top: 25px;
+}
+.first{
+    margin-top: 25px;
+    width: 60%;
+    box-shadow: 0 10px 20px 0 rgba(0, 0, 0, 0.2), 0 4px 10px 0 rgba(8, 30, 224, 0.185);
+    background-color:rgba(8, 30, 224, 0.185);
+}
+span{
+    color: red;
+}
+.b_add{
+    padding: 5px 10px;
+    cursor: pointer;
+    border: none;
+}
+.form{
+    text-align: center;
+}
+hr{
+    width:80%;
+    margin:0 auto;
+    margin-top: 15px;
+  }
+h1{
+    font-size: xx-large;
+    color:darkblue;
+    background-color: azure;
+    margin-bottom: 25px;
+    text-align: center;
+}
+
+.search input
+{
+    width:90%;
+    margin:7px;
+    height:25px;
+    border-radius:25px;
+    padding: 5px 10px;
+    border-color:azure;
+    border:none;
+}
+     
+.search button{
+    background-color:darkblue;
+    color:white;
+    padding: 5px 10px;
+    font-size: 12px;
+    border: none;
+    cursor: pointer;
+}
+
+.my-tasks div {
+    display:block;
+    margin: 15px auto;
+    width: 60%;
+    border: 5px double white;
+    padding: 7px;
+}  
+.selected {
+    background-color:darkblue;
+  }
+  
+.delete , .done {
+    float:right;
+    font-size:11px;
+    color: black;
+}
+footer {
+    text-align:center;
+}

@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title> To-Do list </title>
+        <link rel="icon" type="img/png" href="https://cdn.icon-icons.com/icons2/2621/PNG/512/gui_edit_icon_157165.png">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">  
+        <link rel="stylesheet" href="style.css">
+    </head>
+    <body>
+        <!-- #site-sections -->
+        <!--add sec -->
+        <section class="first" id="first">
+            <h1><strong>To-Do list</strong></h1>
+            <form action=# class="form">
+                <label for="taskname">Task Name <span>*</span>: </label>
+                <input required name="taskname" id="taskname" value="" type="text" tabindex="0" placeholder="text">
+                <br><br>
+                <label for="assignee">assignee <span>*</span>: </label>
+                <input required name="assignee" id="assignee" value="" type="text" tabindex="0" placeholder="text">
+                <button id="b_add" class="b_add" >Add Task</button>
+            </form>
+        <hr>
+        <br>
+        <!-- serch -->
+        <section class="search">
+            <input type="text" placeholder=" Search" name="search" id="search" onkeyup="searchFunction()">
+            <button onclick="searchFunction()"> <i class="fa fa-search" style="font-size: 18px;"> </i> </button>
+        </section>
+         <!-- tasks -->
+        <section class="my-tasks" id="my-tasks" tabindex="0">
+            
+        </section>  
+        <!-- Footer-->
+        <footer class="counts" id="counts">
+            <p id="TD_count">To-Do:</p>
+            <p id="D_count">Done:</p>
+        </footer>
+        </section>
+        <script>
+        let countd = 0; 
+        let count =0; 
+        /* check if done --> style */
+        function check(Oarr)
+        {
+            let btno2 =  document.querySelectorAll(".done");
+            let divo = document.getElementsByTagName("div");
+            for(let i = 0; i < Oarr.length; i++)
+            {
+                if (Oarr[i].done == true)
+                {
+                    btno2[i].style.color='blue';
+                    divo[i].style.borderColor = "blue";
+                }
+            }
+        }
+        /* add */
+        function addFunction(taskname,assignee)
+        {
+            document.getElementById("taskname").focus();
+            let div = document.createElement("div");
+            let attr = document.createAttribute("id");
+            let p = document.createElement("p"); 
+            let p2 = document.createElement("p");
+            let btn = document.createElement("button");
+            btn.innerHTML = '<i class = "fa fa-trash"></i>';
+            let btn2 = document.createElement("button");
+            btn2.innerHTML = '<i class = "fa fa-check-circle"></i>';
+            p.classList += 'task'; 
+            btn.className='delete';
+            btn2.className='done';
+            p.innerHTML = taskname; 
+            p2.innerHTML = assignee;
+            attr.value="container";
+            div.setAttributeNode(attr); 
+            div.appendChild(p);               
+            div.appendChild(btn);
+            div.appendChild(btn2);
+            div.appendChild(p2);
+            document.getElementById('my-tasks').appendChild(div); 
+            count = document.getElementsByTagName("div").length;
+            document.getElementById("TD_count").innerHTML = "To-DO:" + count;
+            countd = savedTasks.filter(value => value.done === true).length;
+            document.getElementById("D_count").innerHTML = "Done:" + countd;
+            /* delete*/
+            let delete_tasks = document.querySelectorAll(".delete");
+            for(let i=0; i<delete_tasks.length; i++)
+            {
+                delete_tasks[i].onclick = function ()
+                {
+                    let result = confirm("Are you sure to delete?");
+                    if(result)
+                    {
+                        savedTasks = savedTasks.filter((e) => e.taskName !== this.parentNode.firstChild.innerHTML);
+                        localStorage.setItem("tasks", JSON.stringify(savedTasks));
+                        savedTasks = savedTasks.filter((e) => e.assignee !== this.parentNode.lastChild.innerHTML);
+                        localStorage.setItem("tasks", JSON.stringify(savedTasks));
+                        this.parentNode.remove();
+                        count = document.getElementsByTagName("div").length;
+                        document.getElementById("TD_count").innerHTML = "To-DO:" + count;
+                        countd = savedTasks.filter(value => value.done === true).length;
+                        document.getElementById("D_count").innerHTML = "Done:" + countd;
+                    }
+                }
+            }
+            /* done */
+            let done_tasks = document.querySelectorAll(".done");
+            for(let k=0; k<done_tasks.length; k++)
+            {           
+                done_tasks[k].onclick = function()
+                {
+                    if (this.style.color != "blue")
+                    {
+                        this.style.color="blue";
+                        this.parentNode.style.borderColor = "blue";
+                        //Modify elements
+                        savedTasks=savedTasks.map(obj =>{if (obj.taskName === this.parentNode.firstChild.innerHTML ) {return {...obj, done: true};}return obj;});
+                        localStorage.setItem("tasks", (JSON.stringify(savedTasks)));
+                    }
+                    else
+                    {
+                        this.style.color="black";
+                        this.parentNode.style.borderColor = "white";
+                        savedTasks=savedTasks.map(obj =>{if (obj.taskName === this.parentNode.firstChild.innerHTML ) {return {...obj, done: false};}return obj;});
+                        localStorage.setItem("tasks", (JSON.stringify(savedTasks)));
+                    }
+                    countd = savedTasks.filter(value => value.done === true).length;
+                    document.getElementById("D_count").innerHTML = "Done:" + countd;
+                }
+            }
+        }    
+        let btno = document.querySelector("#b_add");
+        const firstName = document.getElementById('taskname');
+        const secName = document.getElementById('assignee');
+        // load saved tasts
+        let savedTasks = JSON.parse(window.localStorage.getItem("tasks")) || [];
+        let kok = new Object();
+        // add div elements for any saved task
+        savedTasks.forEach(({taskName,assignee})=>addFunction(taskName,assignee));
+        if (savedTasks.length !== 0)
+        {
+            check(savedTasks);
+        }
+        btno.addEventListener("click", () => 
+        {
+            let taskname =  document.getElementById("taskname").value ;
+            let assignee= document.getElementById("assignee").value ;
+            if ( taskname === "" || assignee ==="") 
+            {
+                alert("Please fill the form");
+            }
+            else
+            {
+                kok = {
+                    taskName : taskname,
+                    assignee : assignee,
+                    done    : false,
+                };
+                savedTasks.push(kok);
+                window.localStorage.setItem("tasks", JSON.stringify(savedTasks));
+                firstName.value = '';
+                secName.value = '';
+                addFunction(taskname,assignee);
+            }
+        });  
+        /*navigate using arrows between tasks,
+        and delete by pressing the delete button on the keyboard 
+        and mark as done by pressing enter.*/
+        let sec = document.getElementById('my-tasks');
+        let divSelected;
+        let index = -1;
+        let len = sec.getElementsByTagName('div').length -1;
+        window.addEventListener('click', function(e)
+        {
+            if (document.getElementById('my-tasks').contains(e.target))
+            {
+                window.addEventListener('keydown', function(event)
+                {
+                    //down
+                    if (event.which === 40) 
+                    {
+                        index++;
+                        if (divSelected)
+                        {
+                            divSelected.classList.remove('selected');
+                            next = sec.getElementsByTagName('div')[index];
+                            if (typeof next !== undefined && index <= len)
+                            {
+                                divSelected = next;
+                            } 
+                            else 
+                            {
+                                index = 0;
+                                divSelected = sec.getElementsByTagName('div')[0];
+                            }
+                            divSelected.classList.add('selected');
+                        } 
+                        else 
+                        {
+                            index = 0;
+                            divSelected = sec.getElementsByTagName('div')[0];
+                            divSelected.classList.add('selected');
+                        }
+                    }
+                    //up
+                    else if (event.which === 38)
+                    {
+                        if (divSelected)
+                        {
+                            divSelected.classList.remove('selected');
+                            index--;
+                            next = sec.getElementsByTagName('div')[index];
+                            if (typeof next !== undefined && index >= 0)
+                            {
+                                divSelected = next;
+                            }
+                            else
+                            {
+                                index = len;
+                                divSelected = sec.getElementsByTagName('div')[len];
+                            }
+                            divSelected.classList.add('selected');
+                        }
+                        else
+                        {
+                            index = 0;
+                            divSelected = sec.getElementsByTagName('div')[len];
+                            divSelected.classList.add('selected');
+                        }
+                    }
+                    //enter --> done
+                    else if (event.which === 13)
+                    {
+                        if (sec.getElementsByTagName('div')[index].style.borderColor != "blue")
+                        {
+                            sec.getElementsByTagName('div')[index].getElementsByTagName('button')[1].style.color="blue";
+                            sec.getElementsByTagName('div')[index].style.borderColor = "blue";
+                            //Modify elements
+                            savedTasks=savedTasks.map(obj =>{if (obj.taskName === sec.getElementsByTagName('div')[index].firstChild.innerHTML ) {return {...obj, done: true};}return obj;});
+                            localStorage.setItem("tasks", (JSON.stringify(savedTasks)));
+                        }
+                        else
+                        {
+                            sec.getElementsByTagName('div')[index].getElementsByTagName('button')[1].style.color="black";
+                            sec.getElementsByTagName('div')[index].style.borderColor = "white";
+                            savedTasks=savedTasks.map(obj =>{if (obj.taskName === sec.getElementsByTagName('div')[index].firstChild.innerHTML ) {return {...obj, done: false};}return obj;});
+                            localStorage.setItem("tasks", (JSON.stringify(savedTasks)));
+                        }
+                        countd = savedTasks.filter(value => value.done === true).length;
+                        document.getElementById("D_count").innerHTML = "Done:" + countd;
+                    }
+                    //delete
+                    else if (event.which === 46)
+                    {
+                        savedTasks = savedTasks.filter((e) => e.taskName !== sec.getElementsByTagName('div')[index].firstChild.innerHTML);
+                        localStorage.setItem("tasks", JSON.stringify(savedTasks));
+                        savedTasks = savedTasks.filter((e) => e.assignee !== sec.getElementsByTagName('div')[index].lastChild.innerHTML);
+                        localStorage.setItem("tasks", JSON.stringify(savedTasks));
+                        sec.getElementsByTagName('div')[index].remove();
+                        count = document.getElementsByTagName("div").length;
+                        document.getElementById("TD_count").innerHTML = "To-DO:" + count;
+                        countd = savedTasks.filter(value => value.done === true).length;
+                        document.getElementById("D_count").innerHTML = "Done:" + countd;
+                    }
+                }, false);
+            }
+            else
+            {
+                divSelected.classList.remove('selected');
+            }
+        });
+        /* search */
+        function searchFunction() 
+        {
+            let txtValue;
+            let input = document.getElementById("search");
+            let filter = input.value.toUpperCase();
+            let sec = document.getElementById('my-tasks');
+            let div = sec.getElementsByTagName("div");
+            for (let i = 0; i < div.length; i++) 
+            {
+                txtValue = div[i].innerText;
+                if (txtValue.toUpperCase().indexOf(filter) > -1)
+                {
+                    div[i].style.display = "";
+                }
+                else
+                {
+                    div[i].style.display = "none";
+                }
+            }
+        }
+        /* edit */
+        document.querySelectorAll("div p").forEach(function(node)
+        {
+            node.ondblclick=function()
+            {
+                let val=this.innerHTML;
+                let input=document.createElement("input");
+                input.value=val;
+                let parent = this.parentNode;
+                objIndex = savedTasks.findIndex((obj => obj.taskName == this.parentNode.firstChild.innerHTML));
+                objIndex2 = savedTasks.findIndex((obj => obj.assignee == this.parentNode.lastChild.innerHTML));
+                input.onblur=function()
+                {
+                    if(node == parent.firstElementChild)
+                    {
+                        let val=this.value;
+                        this.parentNode.innerHTML=val;
+                        savedTasks[objIndex2].taskName = val;
+                        localStorage.setItem("tasks", (JSON.stringify(savedTasks)));
+                    }
+                    else
+                    {
+                        let val=this.value;
+                        this.parentNode.innerHTML=val;
+                        savedTasks[objIndex].assignee = val;
+                        localStorage.setItem("tasks", (JSON.stringify(savedTasks)));
+                    }
+                }
+                this.innerHTML="";
+                this.appendChild(input);
+                input.focus();
+            }
+        });
+        </script>
+    </body>
+</html>
